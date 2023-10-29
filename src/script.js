@@ -80,6 +80,8 @@ function handleFile(file) {
       jsonTitle.innerText = file.name;
       jsonSection.style.display = "block";
       jsonSection.style.height = `${(keyArr.length + 2) * liHeight}px`;
+      linesPerPage =
+        linesPerPage > keyArr.length ? keyArr.length : linesPerPage;
       fullRender();
     })
     .catch((err) => {
@@ -200,6 +202,7 @@ window.onscroll = () => {
 window.onresize = () => {
   linesPerPage = Math.ceil(window.innerHeight / liHeight) + 1;
   if (!jsonLines.hasChildNodes()) return;
+  linesPerPage = linesPerPage > keyArr.length ? keyArr.length : linesPerPage;
   if (jsonLines.children.length > linesPerPage) {
     while (jsonLines.children.length > linesPerPage) {
       jsonLines.lastChild?.remove();
