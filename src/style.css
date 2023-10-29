@@ -1,0 +1,105 @@
+body,
+html,
+main div {
+  height: 100%;
+  margin: 0px;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+main {
+  margin-left: auto;
+  margin-right: auto;
+  height: 100%;
+  width: 100%;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 46px;
+  gap: 24px;
+  height: 100%;
+}
+
+section h1,
+h2,
+p {
+  margin: 0px;
+}
+
+section h1 {
+  font-size: 48px;
+  text-align: center;
+}
+
+section h2 {
+  font-size: 24px;
+  font-weight: lighter;
+  text-align: center;
+}
+
+section button {
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 5px;
+  border: 1px solid #000;
+}
+
+section p {
+  color: #bf0e0e;
+  font-size: 16px;
+  text-align: center;
+}
+
+main div {
+  margin-left: auto;
+  margin-right: auto;
+  padding: 28px 48px;
+  max-width: 768px;
+}
+
+ul {
+  margin: 10px 0px 0px 0px;
+  padding: 0px;
+  position: relative;
+  list-style: none;
+}
+
+li {
+  height: 20px;
+  width: 100%;
+}
+
+span {
+  white-space: nowrap;
+  position: relative;
+  display: inline-block;
+  line-height: 20px;
+}
+
+.span_space {
+  border: 1px solid #bfbfbf;
+  height: 20px;
+  position: absolute;
+}
+
+.index_span {
+  color: #bfbfbf;
+}
+
+.key_span {
+  color: #4e9590;
+}
+
+.bracket_span {
+  color: #f2cab8;
+}
+
+.colon_span {
+  padding-right: 5px;
+}
