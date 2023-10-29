@@ -159,21 +159,25 @@ function createLine(line) {
     const isArray = !isNaN(Number(key));
     const lSpan = document.createElement("span");
     lSpan.className = isArray ? "index_span" : "key_span";
-    lSpan.innerText = key;
+    lSpan.appendChild(document.createTextNode(key));
     span.appendChild(lSpan);
 
     const mSpan = document.createElement("span");
     mSpan.className = isArray ? "index_span colon_span" : "key_span colon_span";
-    mSpan.innerText = ":";
+    mSpan.appendChild(document.createTextNode(":"));
     span.appendChild(mSpan);
   }
   if (value !== undefined) {
     const rSpan = document.createElement("span");
     if (value === "[" || value === "]") {
       rSpan.className = "bracket_span";
-      rSpan.innerText = value;
+      rSpan.appendChild(document.createTextNode(value));
     } else {
-      rSpan.innerText = typeof value === "string" ? `"${value}"` : value;
+      rSpan.appendChild(
+        document.createTextNode(
+          typeof value === "string" ? `"${value}"` : value
+        )
+      );
     }
     span.appendChild(rSpan);
   }
