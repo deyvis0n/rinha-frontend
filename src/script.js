@@ -7,10 +7,18 @@ const liHeight = 20;
 const spanTabSize = 20;
 let firstLineIndex = 0;
 let linesPerPage = Math.ceil(window.innerHeight / liHeight) + 1;
+const pageMaxNumberOfLines = 500000;
+let pageNumberOfPages = 0;
+let pageCurrPage = 0;
+let pageCurrPageSize = 0;
+let pageLastPageSize = 0;
 
 const jsonLines = document.createElement("ul");
 const jsonSection = document.createElement("div");
+jsonSection.className = "jsonSection";
 const jsonTitle = document.createElement("h2");
+const buttonArea = document.createElement("div");
+buttonArea.className = "buttonArea";
 
 const body = document.body;
 const main = document.createElement("main");
@@ -58,6 +66,7 @@ section.appendChild(input);
 section.appendChild(p);
 
 jsonSection.appendChild(jsonTitle);
+jsonSection.appendChild(buttonArea);
 jsonSection.appendChild(jsonLines);
 jsonSection.style.display = "none";
 
@@ -76,12 +85,15 @@ function handleFile(file) {
   extractJson(file)
     .then((json) => extractJsonLines(json, 0))
     .then(() => {
+      calcPages(keyArr.length);
       section.style.display = "none";
       jsonTitle.innerText = file.name;
       jsonSection.style.display = "block";
-      jsonSection.style.height = `${(keyArr.length + 2) * liHeight}px`;
+      jsonSection.style.height = `${
+        (pageCurrPageSize + 2) * liHeight + buttonArea.clientHeight
+      }px`;
       linesPerPage =
-        linesPerPage > keyArr.length ? keyArr.length : linesPerPage;
+        linesPerPage > pageCurrPageSize ? pageCurrPageSize : linesPerPage;
       fullRender();
     })
     .catch((err) => {
@@ -133,6 +145,7 @@ function extractJsonLines(json, numberOfTabs) {
           tabArr.push(numberOfTabs);
         }
       }
+      delete json[key];
     }
   }
   moreLines(json, numberOfTabs);
@@ -146,11 +159,76 @@ function extractJsonLines(json, numberOfTabs) {
 
 /**
  *
+ * @param {number} totalLines
+ */
+function calcPages(totalLines) {
+  if (totalLines > pageMaxNumberOfLines) {
+    pageNumberOfPages = Math.ceil(totalLines / pageMaxNumberOfLines);
+    pageLastPageSize =
+      totalLines - (pageNumberOfPages - 1) * pageMaxNumberOfLines;
+    pageCurrPageSize = pageMaxNumberOfLines;
+    createPageButtons(pageNumberOfPages);
+  } else {
+    pageNumberOfPages = 1;
+    pageLastPageSize = totalLines;
+    pageCurrPageSize = pageLastPageSize;
+  }
+  pageCurrPage = 1;
+}
+
+/**
+ *
+ * @param {number} quantity
+ */
+function createPageButtons(quantity) {
+  for (let i = 0; i < quantity; i++) {
+    const button = document.createElement("button");
+    const text = document.createTextNode(String(i + 1));
+    button.appendChild(text);
+    button.addEventListener(
+      "click",
+      () => {
+        changePage(i);
+      },
+      false
+    );
+    buttonArea.appendChild(button);
+  }
+  buttonArea.children[0].className = "btn_current";""
+}
+
+/**
+ *
+ * @param {number} id
+ */
+function changePage(id) {
+  if (pageCurrPage === id + 1) return;
+  buttonArea.children[pageCurrPage - 1].className = "";
+  pageCurrPage = id + 1;
+  buttonArea.children[id].className = "btn_current";
+  if (pageCurrPage === pageNumberOfPages) {
+    pageCurrPageSize = pageLastPageSize;
+  } else {
+    pageCurrPageSize = pageMaxNumberOfLines;
+  }
+  jsonSection.style.height = `${
+    (pageCurrPageSize + 2) * liHeight + buttonArea.clientHeight
+  }px`;
+  jsonLines.innerHTML = "";
+  fullRender();
+}
+
+/**
+ *
  * @param {number} line
  * @returns {HTMLLIElement}
  */
 function createLine(line) {
-  const [key, value, tab] = [keyArr[line], valueArr[line], tabArr[line]];
+  const [key, value, tab] = [
+    keyArr[line + (pageCurrPage - 1) * pageMaxNumberOfLines],
+    valueArr[line + (pageCurrPage - 1) * pageMaxNumberOfLines],
+    tabArr[line + (pageCurrPage - 1) * pageMaxNumberOfLines],
+  ];
   const li = document.createElement("li");
   spanLeftSpaces(li, tab);
   const span = document.createElement("span");
@@ -206,7 +284,8 @@ window.onscroll = () => {
 window.onresize = () => {
   linesPerPage = Math.ceil(window.innerHeight / liHeight) + 1;
   if (!jsonLines.hasChildNodes()) return;
-  linesPerPage = linesPerPage > keyArr.length ? keyArr.length : linesPerPage;
+  linesPerPage =
+    linesPerPage > pageCurrPageSize ? pageCurrPageSize : linesPerPage;
   if (jsonLines.children.length > linesPerPage) {
     while (jsonLines.children.length > linesPerPage) {
       jsonLines.lastChild?.remove();
@@ -236,8 +315,8 @@ function renderCheck() {
   } else {
     if (firstLineIndex < currIndex) {
       const end =
-        currIndex + linesPerPage > keyArr.length
-          ? keyArr.length - linesPerPage
+        currIndex + linesPerPage > pageCurrPageSize
+          ? pageCurrPageSize - linesPerPage
           : currIndex;
       for (let i = firstLineIndex; i < end; i++) {
         jsonLines.appendChild(createLine(i + linesPerPage));

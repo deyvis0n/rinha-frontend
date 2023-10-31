@@ -1,8 +1,9 @@
 body,
 html,
-main div {
+.jsonSection {
   height: 100%;
   margin: 0px;
+  width: 100%;
 }
 
 body {
@@ -56,10 +57,11 @@ section p {
   text-align: center;
 }
 
-main div {
+.jsonSection {
   margin-left: auto;
   margin-right: auto;
   padding: 28px 48px;
+  width: auto;
   max-width: 768px;
 }
 
@@ -102,4 +104,15 @@ span {
 
 .colon_span {
   padding-right: 5px;
+}
+
+.buttonArea {
+  display: inline-block;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow-y: scroll;
+}
+
+.btn_current {
+  border: 2px solid;
 }
