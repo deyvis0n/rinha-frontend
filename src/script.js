@@ -82,6 +82,9 @@ body.appendChild(main);
 function handleFile(file) {
   if (!file) return;
   p.style.display = "none";
+  button.textContent = "";
+  const buttonText = document.createTextNode("Loading...");
+  button.appendChild(buttonText);
   extractJson(file)
     .then((json) => extractJsonLines(json, 0))
     .then(() => {
@@ -97,6 +100,9 @@ function handleFile(file) {
       fullRender();
     })
     .catch((err) => {
+      button.textContent = "";
+      const buttonText = document.createTextNode("Load JSON");
+      button.appendChild(buttonText);
       p.style.display = "block";
     });
 }
@@ -194,7 +200,8 @@ function createPageButtons(quantity) {
     );
     buttonArea.appendChild(button);
   }
-  buttonArea.children[0].className = "btn_current";""
+  buttonArea.children[0].className = "btn_current";
+  ("");
 }
 
 /**
